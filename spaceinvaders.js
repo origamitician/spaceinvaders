@@ -15,7 +15,7 @@ var shots = []
 var deathParticles = []
 var xPos = -1
 var yPos = -1
-var waveInfo = {wavelength: -1, commandList: [], pattern: -1, currentID: -1, startX: -1, startY: -1, initDirection: -1}
+var waveInfo = {wavelength: -1, commandList: [], pattern: -1, currentID: -1, startX: -1, startY: -1, initDirection: -1, double: false}
 
 //sounds
 var shotSound = new Audio("./sounds/laser.wav")
@@ -56,14 +56,16 @@ function cloneAlien(startX, startY, type, angle){
     c.restore()
 }
 
-function initWave(command, wavelength, pattern, startX, startY, initDirection){
+function initWave(command, wavelength, pattern, startX, startY, initDirection, double){
     waveInfo.commandList = command.split('-')
     waveInfo.wavelength = wavelength
     waveInfo.pattern = pattern
     waveInfo.currentID = 0
     waveInfo.startX = startX
     waveInfo.startY = startY
+    waveInfo.double = double
     waveInfo.initDirection = initDirection
+
     for (let i = 0; i < waveInfo.commandList.length; i++){
         let subcmd = waveInfo.commandList[i]
         for (let j = 0; j < subcmd.length; j++){
@@ -77,9 +79,17 @@ function initWave(command, wavelength, pattern, startX, startY, initDirection){
 
 function initAlien(){
     if (waveInfo.currentID < waveInfo.wavelength){
-        listOfAliens.push({x: waveInfo.startX, y: waveInfo.startY, angle: waveInfo.initDirection, outerLoop: 0, innerLoop: 0, /*species: pattern.charAt(i%pattern.length),*/ wave: "original"})
+        listOfAliens.push({x: waveInfo.startX, y: waveInfo.startY, angle: waveInfo.initDirection, outerLoop: 0, innerLoop: 0, wave: "original"})
+        
+
+        if(waveInfo.double){
+            console.log("doubling")
+            listOfAliens.push({x: window.innerWidth-waveInfo.startX, y: waveInfo.startY, angle: (Math.PI)-waveInfo.initDirection, outerLoop: 0, innerLoop: 0, wave: "reflected"})
+        }
+
         waveInfo.currentID +=1;
     }
+    
 }
 
 function cloneShots(){
@@ -135,7 +145,11 @@ function updateAlienCoords(){
             if(outerLoopLocation.breakletter == "R"){
                 if(listOfAliens[i].innerLoop < parseInt(outerLoopLocation.subCommand.substring(0, outerLoopLocation.breakpoint))){
                     angle = parseFloat(outerLoopLocation.subCommand.substring(outerLoopLocation.breakpoint+1))
-                    listOfAliens[i].angle += (angle/360)*(2*Math.PI)
+                    if(listOfAliens[i].wave == "reflected"){
+                        listOfAliens[i].angle -= (angle/360)*(2*Math.PI)
+                    }else{
+                        listOfAliens[i].angle += (angle/360)*(2*Math.PI)
+                    }
                     listOfAliens[i].innerLoop += 1;
                     listOfAliens[i].x += alienSpeed*Math.cos(listOfAliens[i].angle)
                     listOfAliens[i].y += alienSpeed*Math.sin(listOfAliens[i].angle)
@@ -147,7 +161,12 @@ function updateAlienCoords(){
             }else if (outerLoopLocation.breakletter == "L"){
                 if(listOfAliens[i].innerLoop < parseInt(outerLoopLocation.subCommand.substring(0, outerLoopLocation.breakpoint))){
                     angle = parseFloat(outerLoopLocation.subCommand.substring(outerLoopLocation.breakpoint+1))
-                    listOfAliens[i].angle -= (angle/360)*(2*Math.PI)
+                    if(listOfAliens[i].wave == "reflected"){
+                        listOfAliens[i].angle += (angle/360)*(2*Math.PI)
+                    }else{
+                        listOfAliens[i].angle -= (angle/360)*(2*Math.PI)
+                    }
+                    
                     listOfAliens[i].innerLoop += 1;
                     
                     listOfAliens[i].x += alienSpeed*Math.cos(listOfAliens[i].angle)
@@ -264,7 +283,7 @@ function drawDeathParticles(){
     }
 }
 
-initWave("120F6-45L2-35R3-120F6-180L1.5-100F6-20R7-100F6-45L2-150F6", 45, "1254", 0, 300, 0)
+initWave("120F6-45L2-35R3-120F6-180L1.5-100F6-20R7-100F6-45L2-150F6", 45, "1254", 0, 300, 0, true)
 
 let start = Date.now();
 
@@ -275,8 +294,9 @@ function frame(event){
     updateAlienCoords()
     //console.log(listOfAliens)
     drawShip(xPos, yPos-5)
-    if(Date.now() - start > 120){
-        initShot(xPos, yPos-10, "fast")
+    if(Date.now() - start >135){
+        initShot(xPos-shipSize, yPos-10, "fast")
+        initShot(xPos+shipSize, yPos-10, "fast")
         start = Date.now()
     }
     updateShotCoords()
