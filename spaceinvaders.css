@@ -1,0 +1,10 @@
+#myCanvas{
+    border: 2px solid black;
+    margin: -0.75%;
+    background-color: black;
+}
+
+body{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

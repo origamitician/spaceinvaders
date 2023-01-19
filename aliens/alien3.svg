@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="40"
+   height="40"
+   viewBox="0 0 10.583333 10.583334"
+   version="1.1"
+   id="svg8258"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="alien3.svg"
+   inkscape:export-filename="C:\Users\mchlc\mystuff\spaceinvaders\aliens\alien3.png"
+   inkscape:export-xdpi="95.177216"
+   inkscape:export-ydpi="95.177216"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview8260"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="4.0013038"
+     inkscape:cx="-62.354675"
+     inkscape:cy="3.9986966"
+     inkscape:window-width="1920"
+     inkscape:window-height="986"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs8255" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;stroke:#ffb500;stroke-width:1.30181;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 2.5581869,0.04662293 0.7013024,5.3070675 2.5848869,10.580669"
+       id="path2916"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#ff6600;stroke:#ffb500;stroke-width:1.19056;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1.9453731,9.9848667 4.684679,-0.00452 v 0"
+       id="path3404-9-1"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#ff6600;stroke:#ffb500;stroke-width:1.19056;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 1.9453731,0.59979971 4.684679,-0.00452 v 0"
+       id="path3404-9-1-2"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#ff6600;stroke:#ffb500;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 0.69435629,5.3070462 7.92479921,-0.00448 v 0"
+       id="path3404-9-1-6-9"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#ffb500;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 1.9453731,0.59979969 9.7179433,5.1856738 1.9453731,9.9848666"
+       id="path10920"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#ffb500;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 6.2326182,10.284267 8.1048293,5.2324307 6.1157259,0.24460276"
+       id="path14397"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#ffb500;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 6.8031327,8.7435453 9.7254408,8.7201668"
+       id="path15294" />
+    <path
+       style="fill:none;stroke:#ffb500;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 6.8527259,1.7486607 9.775034,1.7252822"
+       id="path15294-5" />
+  </g>
+</svg>
