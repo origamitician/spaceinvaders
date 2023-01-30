@@ -10,8 +10,8 @@
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    sodipodi:docname="alien3.svg"
    inkscape:export-filename="C:\Users\mchlc\mystuff\spaceinvaders\aliens\alien3.png"
-   inkscape:export-xdpi="95.177216"
-   inkscape:export-ydpi="95.177216"
+   inkscape:export-xdpi="230.21921"
+   inkscape:export-ydpi="230.21921"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -27,9 +27,9 @@
      inkscape:document-units="mm"
      showgrid="false"
      units="px"
-     inkscape:zoom="4.0013038"
-     inkscape:cx="-62.354675"
-     inkscape:cy="3.9986966"
+     inkscape:zoom="11.317396"
+     inkscape:cx="4.5505167"
+     inkscape:cy="19.52746"
      inkscape:window-width="1920"
      inkscape:window-height="986"
      inkscape:window-x="-11"
@@ -43,8 +43,8 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:none;stroke:#ffb500;stroke-width:1.30181;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 2.5581869,0.04662293 0.7013024,5.3070675 2.5848869,10.580669"
+       style="fill:none;stroke:#ffb500;stroke-width:1.36753;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 2.5554228,0.04662293 0.50630279,5.3070675 2.5848869,10.580669"
        id="path2916"
        sodipodi:nodetypes="ccc" />
     <path
@@ -73,12 +73,12 @@
        id="path14397"
        sodipodi:nodetypes="ccc" />
     <path
-       style="fill:none;stroke:#ffb500;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 6.8031327,8.7435453 9.7254408,8.7201668"
+       style="fill:none;stroke:#ffb500;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 6.6300521,9.9803467 9.5523602,9.9569682"
        id="path15294" />
     <path
        style="fill:none;stroke:#ffb500;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 6.8527259,1.7486607 9.775034,1.7252822"
+       d="M 6.6300521,0.59527971 9.5523602,0.57190121"
        id="path15294-5" />
   </g>
 </svg>
