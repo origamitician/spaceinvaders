@@ -6,12 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="spaceinvaders.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap" rel="stylesheet">
 </head>
 <body>
+    <p id = "scoreDiv">Score: 0</p>
     <canvas id="myCanvas" width="1280" height="700"></canvas>
-    <img src="./aliens/alien1.png" alt="" class="alienImg" height="40px" width="40px">
+    <div id = "imageList">
+        <img src="./aliens/alien1.png" alt="" class="alienImg" height="40px" width="40px">
     <img src="./aliens/alien2.png" alt="" class="alienImg" height="40px" width="40px">
     <img src="./aliens/alien3.png" alt="" class="alienImg" height="40px" width="40px">
+    </div>
+    
 </body>
 <script src="functions.js"></script>
 <script src="main.js"></script>

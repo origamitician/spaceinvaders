@@ -5,8 +5,9 @@ collisionRadius = 17;
 borderThickness = collisionRadius/5
 alienSpeed = 3
 shipSize = 35
+score = 0;
 
-canvas.setAttribute('height', window.innerHeight + "px");
+canvas.setAttribute('height', window.innerHeight+ "px");
 canvas.setAttribute('width', window.innerWidth + "px");
 
 let alienImages = [document.getElementsByClassName("alienImg")[0], document.getElementsByClassName("alienImg")[1], document.getElementsByClassName("alienImg")[2]]
@@ -15,12 +16,13 @@ var listOfAliens = []
 var memoryCommandList = []
 var shots = []
 var deathParticles = []
+var projectiles = []
 var xPos = -1
 var yPos = -1
 var waveInfo = {wavelength: -1, commandList: [], pattern: -1, currentID: -1, startX: -1, startY: -1, initDirection: -1, double: false}
 
 //sounds
-var shotSound = new Audio("./sounds/laser.wav")
+var shotSound = new Audio("./sounds/laser.mp3")
 
 let particleColors = [["#46eb34", "#85d166", "grey"], ["#13ede6", "red", "#3c9e9b"], ["orange", "#c4bc27", "#9e873c"]]
 
@@ -53,9 +55,7 @@ function cloneAlien(startX, startY, type, angle){
     c.fillStyle = "red"
     c.fill()
 
-    c.restore()*/
-
-    
+    c.restore()*/  
     c.save()
     c.beginPath()
     c.translate(startX, startY)
@@ -63,9 +63,12 @@ function cloneAlien(startX, startY, type, angle){
     c.drawImage(alienImages[parseInt(type)], 0-collisionRadius, 0-collisionRadius, collisionRadius*2, collisionRadius*2)
     c.closePath()
     c.restore()
-
-
 }
+
+
+    
+
+
 
 function initWave(command, wavelength, pattern, startX, startY, initDirection, double){
     waveInfo.commandList = command.split('-')
@@ -147,6 +150,38 @@ function isAlpha(ch){
     return /^[A-Z]$/i.test(ch);
 }
 
+function drawProjectiles(){
+    let i = 0;
+    while(i < projectiles.length){
+        c.save()
+        c.beginPath()
+        c.translate(projectiles[i].x-3, projectiles[i].y-20)
+        c.rotate(projectiles[i].angle)
+        c.rect(0, 0, 40, 6)
+        c.fillStyle = "red";
+        c.fill()
+        c.closePath()
+        c.restore()
+        i++;
+        
+    }
+}
+
+function updateProjectileCoords(){
+    let i = 0;
+    while(i < projectiles.length){
+        projectiles[i].x +=10*(Math.cos(projectiles[i].angle));
+        projectiles[i].y += 10*(Math.sin(projectiles[i].angle));
+        
+
+        if(projectiles[i].x < 0 || projectiles[i].x > window.innerWidth || projectiles[i].y > window.innerHeight || projectiles[i].y < 0){
+            projectiles.splice(i, 1);
+            i--;
+        }
+        i++;
+    }
+}
+
 function updateAlienCoords(){
     let i = 0;
     while (i < listOfAliens.length){
@@ -198,47 +233,72 @@ function updateAlienCoords(){
                 }
             }
 
-            //detect collision
-            for (let j = 0; j < shots.length; j++){
-                if ((shots[j].x-3 < listOfAliens[i].x+collisionRadius) && 
-                (shots[j].x+3> listOfAliens[i].x-collisionRadius) &&
-                (shots[j].y-20 < listOfAliens[i].y+collisionRadius) && 
-                (shots[j].y+20 > listOfAliens[i].y-collisionRadius)){
-                    let originX = listOfAliens[i].x
-                    let originY = listOfAliens[i].y
-                    let alienType = listOfAliens[i].type
-                    listOfAliens.splice(i, 1)
-                    i--;
-                    shots.splice(j, 1)
-                    j++;
-
-                    //initiate particles
-                    let subDeathParticles = []
-                    let radius = 5
-                    let numParticles = Math.floor(Math.random()*10)+15
-                    
-                    for (let k = 0; k < numParticles; k++){
-                        subDeathParticles.push({
-                            x: originX+(radius*Math.cos(k*((Math.PI*2)/numParticles))),
-                            y: originY+(radius*Math.sin(k*((Math.PI*2)/numParticles))),
-                            variationX: (Math.random()*2)-1,
-                            variationY: (Math.random()*2)-1,
-                            angle: k*((Math.PI*2)/numParticles),
-                            size: Math.floor(Math.random()*4)+1,
-                            initGravity: 4,
-                            particleColor: particleColors[alienType][Math.floor(Math.random()*3)],
-                            loop: 0
-                        })
-                    }
-                    deathParticles.push(subDeathParticles)
+            //clone projectile
+            
+            if(parseInt(Math.random()*4) == 1){
+                let projectileAngle;
+                if(listOfAliens[i].x>xPos){
+                    projectileAngle = Math.PI + Math.atan((yPos+15-listOfAliens[i].y)/(xPos-listOfAliens[i].x))
+                }else{
+                    projectileAngle = Math.atan((yPos+15-listOfAliens[i].y)/(xPos-listOfAliens[i].x))
                 }
+                
+                projectiles.push({x: listOfAliens[i].x, y: listOfAliens[i].y, angle: projectileAngle})
+            }
+            
+            
+            //detect collision
+            let j = 0;
+            while(j < shots.length){
+                try{
+                    if ((shots[j].x-3 < listOfAliens[i].x+collisionRadius) && 
+                    (shots[j].x+3 > listOfAliens[i].x-collisionRadius) &&
+                    (shots[j].y-20 < listOfAliens[i].y+collisionRadius) && 
+                    (shots[j].y+20 > listOfAliens[i].y-collisionRadius)){
+                        
+                        score += 10
+                        document.getElementById("scoreDiv").innerHTML = score;
+                        let originX = listOfAliens[i].x
+                        let originY = listOfAliens[i].y
+                        let alienType = listOfAliens[i].type
+                        listOfAliens.splice(i, 1)
+                        //i--;
+                        shots.splice(j, 1)
+                        j--;
+
+                        //initiate particles
+                        let subDeathParticles = []
+                        let radius = 5
+                        let numParticles = Math.floor(Math.random()*10)+1
+                        
+                        for (let k = 0; k < numParticles; k++){
+                            subDeathParticles.push({
+                                x: originX+(radius*Math.cos(k*((Math.PI*2)/numParticles))),
+                                y: originY+(radius*Math.sin(k*((Math.PI*2)/numParticles))),
+                                variationX: (Math.random()*1)-0.5,
+                                variationY: (Math.random()*2)-1,
+                                angle: k*((Math.PI*2)/numParticles),
+                                size: Math.floor(Math.random()*4)+1,
+                                initGravity: 4,
+                                particleColor: particleColors[alienType][Math.floor(Math.random()*3)],
+                                loop: 0
+                            })
+                        }
+                        deathParticles.push(subDeathParticles)
+                    }
+                }catch (e){
+                    //do nothing
+                }
+                j++;
             }
         }else{
             if(listOfAliens[i].outerLoop >= waveInfo.commandList.length){
                 listOfAliens.splice(i, 1)
+                i--;
             }
         }
         i++;
+        
     }
 }
 
@@ -297,6 +357,10 @@ function drawDeathParticles(){
 
 //initWave("120F6-45L2-35R3-120F6-180L1.5-100F6-20R7-100F6-45L2-150F6", 45, "1254", 0, 300, 0, true)
 
-
+function updateMousePos(event){
+    let rect = canvas.getBoundingClientRect();
+    xPos = event.clientX - rect.left;
+    yPos = event.clientY - rect.top;
+}
 
 
