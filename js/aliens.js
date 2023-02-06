@@ -1,61 +1,15 @@
-const canvas = document.getElementById("myCanvas");
-const c = canvas.getContext("2d");
-c.imageSmoothingEnabled = false;
-collisionRadius = 17;
-borderThickness = collisionRadius/5
-alienSpeed = 3
-shipSize = 35
-score = 0;
-
-canvas.setAttribute('height', window.innerHeight+ "px");
-canvas.setAttribute('width', window.innerWidth + "px");
+var listOfAliens = []
+var memoryCommandList = []
 
 let alienImages = [document.getElementsByClassName("alienImg")[0], document.getElementsByClassName("alienImg")[1], document.getElementsByClassName("alienImg")[2]]
 
-var listOfAliens = []
-var memoryCommandList = []
-var shots = []
-var deathParticles = []
-var projectiles = []
-var xPos = -1
-var yPos = -1
 var waveInfo = {wavelength: -1, commandList: [], pattern: -1, currentID: -1, startX: -1, startY: -1, initDirection: -1, double: false}
 
-//sounds
-var shotSound = new Audio("./sounds/laser.mp3")
-
-let particleColors = [["#46eb34", "#85d166", "grey"], ["#13ede6", "red", "#3c9e9b"], ["orange", "#c4bc27", "#9e873c"]]
+function isAlpha(ch){
+    return /^[A-Z]$/i.test(ch);
+}
 
 function cloneAlien(startX, startY, type, angle){
-   
-    /*
-    c.save()
-    c.beginPath()
-    c.translate(startX, startY)
-    c.rotate(angle)
-    c.rect(0-collisionRadius, 0-collisionRadius, collisionRadius*2, collisionRadius*2)
-    c.fillStyle = "gray";
-    c.fill();
-    c.closePath();
-
-    c.beginPath()
-    c.rect(0-collisionRadius+borderThickness, 0-collisionRadius+borderThickness, (collisionRadius*2)-(borderThickness*2), (collisionRadius*2)-(borderThickness*2))
-    c.fillStyle = "#00ff08";
-    c.fill()
-    c.closePath()
-
-    c.lineWidth = borderThickness+2
-    c.beginPath()
-    c.moveTo(0-borderThickness, 0-collisionRadius+borderThickness)
-    c.lineTo(0+collisionRadius-borderThickness, 0)
-    c.lineTo(0-borderThickness, 0+collisionRadius-borderThickness)
-    c.lineTo(0-borderThickness, 0-collisionRadius+borderThickness)
-    c.strokeStyle = "gray"
-    c.stroke()
-    c.fillStyle = "red"
-    c.fill()
-
-    c.restore()*/  
     c.save()
     c.beginPath()
     c.translate(startX, startY)
@@ -65,12 +19,8 @@ function cloneAlien(startX, startY, type, angle){
     c.restore()
 }
 
-
-    
-
-
-
-function initWave(command, wavelength, pattern, startX, startY, initDirection, double){
+function initWave(command, wavelength, pattern, startX, startY, double){
+    memoryCommandList = [];
     waveInfo.commandList = command.split('-')
     waveInfo.wavelength = wavelength
     waveInfo.pattern = pattern
@@ -78,7 +28,8 @@ function initWave(command, wavelength, pattern, startX, startY, initDirection, d
     waveInfo.startX = startX
     waveInfo.startY = startY
     waveInfo.double = double
-    waveInfo.initDirection = initDirection
+
+    console.log(JSON.stringify(waveInfo))
 
     for (let i = 0; i < waveInfo.commandList.length; i++){
         let subcmd = waveInfo.commandList[i]
@@ -93,93 +44,16 @@ function initWave(command, wavelength, pattern, startX, startY, initDirection, d
 
 function initAlien(){
     if (waveInfo.currentID < waveInfo.wavelength){
-        listOfAliens.push({x: waveInfo.startX, y: waveInfo.startY, angle: waveInfo.initDirection, outerLoop: 0, innerLoop: 0, wave: "original", type: parseInt(waveInfo.pattern[waveInfo.currentID%waveInfo.pattern.length])-1})
+        listOfAliens.push({x: waveInfo.startX, y: waveInfo.startY, angle: 0, outerLoop: 0, innerLoop: 0, wave: "original", type: parseInt(waveInfo.pattern[waveInfo.currentID%waveInfo.pattern.length])-1})
         
 
         if(waveInfo.double){
             console.log("doubling")
-            listOfAliens.push({x: window.innerWidth-waveInfo.startX, y: waveInfo.startY, angle: (Math.PI)-waveInfo.initDirection, outerLoop: 0, innerLoop: 0, wave: "reflected", type: parseInt(waveInfo.pattern[waveInfo.currentID%waveInfo.pattern.length])-1})
+            listOfAliens.push({x: window.innerWidth-waveInfo.startX, y: waveInfo.startY, angle: (Math.PI), outerLoop: 0, innerLoop: 0, wave: "reflected", type: parseInt(waveInfo.pattern[waveInfo.currentID%waveInfo.pattern.length])-1})
         }
-
         waveInfo.currentID +=1;
     }
     
-}
-
-function cloneShots(){
-    let i = 0;
-    while (i<shots.length){
-        c.beginPath()
-        c.rect(shots[i].x-3, shots[i].y-30, 6, 40)
-        c.fillStyle = "lightblue"
-        c.fill()
-        c.closePath()
-        i++
-    }
-    
-}
-
-function initShot(x, y, type){
-    shots.push({x: x, y: y, type: type})
-}
-
-function updateShotCoords(){
-    let i = 0;
-    while (i < shots.length){
-        if (shots[i].type == "normal"){
-            shots[i].y -=7
-        }else if (shots[i].type == "fast"){
-            shots[i].y -= 15
-        }
-
-        if (shots[i].y <= 0){
-            shots.splice(i, 1)
-            i--
-        }
-        i++
-    }
-}
-
-function drawShip(x, y){
-    const img = new Image()
-    img.src = "./aliens/ship1.png"
-    c.drawImage(img, x-shipSize, y-shipSize, shipSize*2, shipSize*2)
-}
-
-function isAlpha(ch){
-    return /^[A-Z]$/i.test(ch);
-}
-
-function drawProjectiles(){
-    let i = 0;
-    while(i < projectiles.length){
-        c.save()
-        c.beginPath()
-        c.translate(projectiles[i].x-3, projectiles[i].y-20)
-        c.rotate(projectiles[i].angle)
-        c.rect(0, 0, 40, 6)
-        c.fillStyle = "red";
-        c.fill()
-        c.closePath()
-        c.restore()
-        i++;
-        
-    }
-}
-
-function updateProjectileCoords(){
-    let i = 0;
-    while(i < projectiles.length){
-        projectiles[i].x +=10*(Math.cos(projectiles[i].angle));
-        projectiles[i].y += 10*(Math.sin(projectiles[i].angle));
-        
-
-        if(projectiles[i].x < 0 || projectiles[i].x > window.innerWidth || projectiles[i].y > window.innerHeight || projectiles[i].y < 0){
-            projectiles.splice(i, 1);
-            i--;
-        }
-        i++;
-    }
 }
 
 function updateAlienCoords(){
@@ -234,8 +108,7 @@ function updateAlienCoords(){
             }
 
             //clone projectile
-            
-            if(parseInt(Math.random()*4) == 1){
+            if(parseInt(Math.random()*1500) == 1){
                 let projectileAngle;
                 if(listOfAliens[i].x>xPos){
                     projectileAngle = Math.PI + Math.atan((yPos+15-listOfAliens[i].y)/(xPos-listOfAliens[i].x))
@@ -245,8 +118,7 @@ function updateAlienCoords(){
                 
                 projectiles.push({x: listOfAliens[i].x, y: listOfAliens[i].y, angle: projectileAngle})
             }
-            
-            
+
             //detect collision
             let j = 0;
             while(j < shots.length){
@@ -255,7 +127,6 @@ function updateAlienCoords(){
                     (shots[j].x+3 > listOfAliens[i].x-collisionRadius) &&
                     (shots[j].y-20 < listOfAliens[i].y+collisionRadius) && 
                     (shots[j].y+20 > listOfAliens[i].y-collisionRadius)){
-                        
                         score += 10
                         document.getElementById("scoreDiv").innerHTML = score;
                         let originX = listOfAliens[i].x
@@ -263,13 +134,14 @@ function updateAlienCoords(){
                         let alienType = listOfAliens[i].type
                         listOfAliens.splice(i, 1)
                         //i--;
+                        cleared ++;
                         shots.splice(j, 1)
                         j--;
 
                         //initiate particles
                         let subDeathParticles = []
                         let radius = 5
-                        let numParticles = Math.floor(Math.random()*10)+1
+                        let numParticles = Math.floor(Math.random()*10)+30
                         
                         for (let k = 0; k < numParticles; k++){
                             subDeathParticles.push({
@@ -294,6 +166,7 @@ function updateAlienCoords(){
         }else{
             if(listOfAliens[i].outerLoop >= waveInfo.commandList.length){
                 listOfAliens.splice(i, 1)
+                cleared ++;
                 i--;
             }
         }
@@ -307,60 +180,3 @@ function cloneAliens(){
         cloneAlien(listOfAliens[i].x, listOfAliens[i].y, listOfAliens[i].type, listOfAliens[i].angle)
     }
 }
-
-/*function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
-  }*/
-  
-function updateDeathParticles(){
-    let i = 0;
-    let j = 0;
-    while (i < deathParticles.length){
-        j = 0;
-        while (j < deathParticles[i].length){
-            if(deathParticles[i][j].y < 625){
-                deathParticles[i][j].x += Math.cos(deathParticles[i][j].angle)*0.5 + deathParticles[i][j].variationX
-                deathParticles[i][j].y -= Math.sin(deathParticles[i][j].angle)*0.5 + deathParticles[i][j].initGravity + deathParticles[i][j].variationY 
-                deathParticles[i][j].initGravity -= 0.1
-                deathParticles[i][j].loop++;
-                j++
-            }else{
-                deathParticles[i].splice(j, 1)
-            }
-        }
-        if(deathParticles[i].length == 0){
-            deathParticles.splice(i, 1)
-            i--;
-        }
-        i++;
-    }
-}
-
-let size;
-function drawDeathParticles(){
-    for(let i = 0; i < deathParticles.length; i++){
-        for(let j = 0; j < deathParticles[i].length; j++){
-            size = deathParticles[i][j].size
-            c.beginPath()
-            c.rect(deathParticles[i][j].x-size, deathParticles[i][j].y-size, size*2, size*2)
-            c.fillStyle = deathParticles[i][j].particleColor;
-            c.fill()
-            c.closePath()
-        }
-    }
-}
-
-//initWave("120F6-45L2-35R3-120F6-180L1.5-100F6-20R7-100F6-45L2-150F6", 45, "1254", 0, 300, 0, true)
-
-function updateMousePos(event){
-    let rect = canvas.getBoundingClientRect();
-    xPos = event.clientX - rect.left;
-    yPos = event.clientY - rect.top;
-}
-
-
