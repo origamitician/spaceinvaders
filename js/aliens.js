@@ -127,16 +127,18 @@ function updateAlienCoords(){
                     (shots[j].x+3 > listOfAliens[i].x-collisionRadius) &&
                     (shots[j].y-20 < listOfAliens[i].y+collisionRadius) && 
                     (shots[j].y+20 > listOfAliens[i].y-collisionRadius)){
-                        score += 10
+                        score += Math.round(10*multiplier)
                         document.getElementById("scoreDiv").innerHTML = score;
                         let originX = listOfAliens[i].x
                         let originY = listOfAliens[i].y
                         let alienType = listOfAliens[i].type
                         listOfAliens.splice(i, 1)
                         //i--;
-                        cleared ++;
+                        cleared++;
+                        clearedByShip++;
                         shots.splice(j, 1)
                         j--;
+                        textsOnScreen.push({text: Math.round(10*multiplier), font: "35px Inconsolata", x: originX, y: originY, life: 30, offset: 20, loop: 0})
 
                         //initiate particles
                         let subDeathParticles = []
@@ -147,8 +149,8 @@ function updateAlienCoords(){
                             subDeathParticles.push({
                                 x: originX+(radius*Math.cos(k*((Math.PI*2)/numParticles))),
                                 y: originY+(radius*Math.sin(k*((Math.PI*2)/numParticles))),
-                                variationX: (Math.random()*1)-0.5,
-                                variationY: (Math.random()*2)-1,
+                                variationX: (Math.random()*4)-2,
+                                variationY: (Math.random()*4)-2,
                                 angle: k*((Math.PI*2)/numParticles),
                                 size: Math.floor(Math.random()*4)+1,
                                 initGravity: 4,

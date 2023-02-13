@@ -25,7 +25,7 @@ function updateShotCoords(){
     let i = 0;
     while (i < shots.length){
         if (shots[i].type == "normal"){
-            shots[i].y -=7
+            shots[i].y -=10
         }else if (shots[i].type == "fast"){
             shots[i].y -= 15
         }

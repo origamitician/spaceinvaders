@@ -38,13 +38,16 @@ let currentSectorDetails = []
 let start = Date.now();
 
 let cleared = 0;
+let clearedByShip = 0;
+
 function initWaveID(sector, id){
     let target = listOfWaves[sector-1][id-1];
     cleared = 0;
+    clearedByShip = 0;
     initWave(target.command, target.length, target.pattern, parseFloat(target.coords.split(",")[0]), parseFloat(target.coords.split(",")[1]), target.double)
 }
 
-
+let multiplier = 1;
 let waveNumber = 2;
 let waveInitialized = false;
 initWaveID(1, 1)
@@ -54,22 +57,39 @@ function frame(){
     updateAlienCoords()
     //console.log(listOfAliens)
     drawShip(xPos, yPos-5)
-    if(Date.now() - start >75){
+    if(Date.now() - start >200){
 
         initShot(xPos, yPos-10, "fast")
         start = Date.now()
     }
-    updateShotCoords()
     cloneShots()
-    updateDeathParticles()
+    updateShotCoords()
+
     drawDeathParticles()
+    updateDeathParticles()
+    
     drawProjectiles()
     updateProjectileCoords()
 
+    updateStars()
+    if(Math.floor(Math.random()*10) == 1){
+        stars.push({x: Math.floor(Math.random()*1280), y: 0, gravity: Math.floor(Math.random()*4)+4})    
+    }
+    drawStars()
+
+    updateText()
+    renderText()
+
+    multiplier += 0.0001;
+    
     //actual main game loop
     if(listOfWaves[0][waveNumber-2].double){
         if(cleared >= listOfWaves[0][waveNumber-2].length*2){
-
+            if(clearedByShip == listOfWaves[0][waveNumber-2].length*2){
+                textsOnScreen.push({text: "Wave cleared! +" + Math.round(0.5*multiplier*Math.pow(clearedByShip, 2)).toString(), font: "35px Inconsolata", x: 600, y: 300, life: 30, offset: 50, loop: 0})
+                score += Math.round(0.5*multiplier*Math.pow(clearedByShip, 2));
+                document.getElementById("scoreDiv").innerHTML = score;
+            }
             setTimeout(() => {initWaveID(1, waveNumber-1)}, 500) //wavenumber increments
             cleared = 0;
             waveNumber++;
@@ -77,11 +97,16 @@ function frame(){
         
     }else{
         if(cleared >= listOfWaves[0][waveNumber-2].length){
+            if(clearedByShip == listOfWaves[0][waveNumber-2].length){
+                textsOnScreen.push({text: "Wave cleared! +" + Math.round(0.5*multiplier*Math.pow(clearedByShip, 2)).toString(), font: "35px Inconsolata", x: 600, y: 300, life: 30, offset: 50, loop: 0})
+                score += Math.round(0.5*multiplier*Math.pow(clearedByShip, 2));
+                document.getElementById("scoreDiv").innerHTML = score;
+            }
+    
             setTimeout(() => {initWaveID(1, waveNumber-1)}, 500)
             cleared = 0;
             waveNumber++;
         }
-        
     }
 }
 

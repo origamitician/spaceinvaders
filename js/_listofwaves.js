@@ -21,6 +21,27 @@ var listOfWaves = [
         coords: "0,0",
         double: true,
         waveID: 2},
+
+        {command: "1R135-70F6-45R1-200F6-360R2-40F6-70L2.75-300F6",
+        length: 11,
+        pattern: "122",
+        coords: "1280,0",
+        double: false,
+        waveID: 3},
+
+        {command: "200F6-45L2-15F6-45L2-40F6-90L2-300F6",
+        length: 8,
+        pattern: "122",
+        coords: "0,250",
+        double: true,
+        waveID: 4}, 
+
+        {command: "200F6-45L2-15F6-45L2-40F6-90L2-300F6",
+        length: 200,
+        pattern: "122",
+        coords: "0,250",
+        double: true,
+        waveID: 5}, 
         
     ],
 ]
