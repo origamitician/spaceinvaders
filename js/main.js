@@ -6,6 +6,7 @@ borderThickness = collisionRadius/5
 alienSpeed = 3
 shipSize = 35
 score = 0;
+var alienInterval; 
 
 canvas.setAttribute('height', window.innerHeight+ "px");
 canvas.setAttribute('width', window.innerWidth + "px");
@@ -40,17 +41,19 @@ let start = Date.now();
 let cleared = 0;
 let clearedByShip = 0;
 
-function initWaveID(sector, id){
+function initWaveID(sector, id, acceleration){
+    clearInterval(alienInterval);
     let target = listOfWaves[sector-1][id-1];
     cleared = 0;
     clearedByShip = 0;
-    initWave(target.command, target.length, target.pattern, parseFloat(target.coords.split(",")[0]), parseFloat(target.coords.split(",")[1]), target.double)
+    initWave(target.command, target.length, target.pattern, parseFloat(target.coords.split(",")[0]), parseFloat(target.coords.split(",")[1]), target.double, true, acceleration)
+    alienInterval = setInterval(initAlien, Math.round(250/waveInfo.speedIncrease))
 }
 
 let multiplier = 1;
 let waveNumber = 2;
 let waveInitialized = false;
-initWaveID(1, 1)
+initWaveID(1, 1, 5)
 function frame(){
     c.clearRect(0, 0, canvas.width, canvas.height);
     cloneAliens()
@@ -60,6 +63,7 @@ function frame(){
     if(Date.now() - start >200){
 
         initShot(xPos, yPos-10, "fast")
+        
         start = Date.now()
     }
     cloneShots()
@@ -90,7 +94,7 @@ function frame(){
                 score += Math.round(0.5*multiplier*Math.pow(clearedByShip, 2));
                 document.getElementById("scoreDiv").innerHTML = score;
             }
-            setTimeout(() => {initWaveID(1, waveNumber-1)}, 500) //wavenumber increments
+            setTimeout(() => {initWaveID(1, waveNumber-1, 1)}, 500) //wavenumber increments
             cleared = 0;
             waveNumber++;
         }
@@ -103,7 +107,7 @@ function frame(){
                 document.getElementById("scoreDiv").innerHTML = score;
             }
     
-            setTimeout(() => {initWaveID(1, waveNumber-1)}, 500)
+            setTimeout(() => {initWaveID(1, waveNumber-1, 1)}, 500)
             cleared = 0;
             waveNumber++;
         }
@@ -112,4 +116,3 @@ function frame(){
 
 document.getElementById("myCanvas").addEventListener("mousemove", updateMousePos)
 var interval = setInterval(frame, 10)
-var alienInterval = setInterval(initAlien, 250)

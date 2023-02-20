@@ -22,10 +22,7 @@ function renderText(){
         c.textAlign = "center";
         c.globalAlpha = 1-((1/textsOnScreen[i].life)*(textsOnScreen[i].loop-textsOnScreen[i].offset))
         c.fillStyle = "white";
-        
         c.fillText(textsOnScreen[i].text, textsOnScreen[i].x, textsOnScreen[i].y);
-        
-        
         c.restore()
         c.closePath()
         i++;
