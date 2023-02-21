@@ -60,16 +60,9 @@ function initWave(command, wavelength, pattern, startX, startY, double, grid, sp
         let newSpeed;
         let newLoop;
 
-        if(c.breakletter != "F"){
-            total = parseInt(c.subCommand.substring(0, c.breakpoint))*parseFloat(c.subCommand.substring(c.breakpoint+1))
-            newSpeed = parseFloat(c.subCommand.substring(c.breakpoint+1))*speedIncrease
-            newLoop = Math.ceil(total / newSpeed);
-        }else{
-            total = parseInt(c.subCommand.substring(0, c.breakpoint))*parseFloat(c.subCommand.substring(c.breakpoint+1))
-            newSpeed = parseFloat(c.subCommand.substring(c.breakpoint+1))*speedIncrease
-            newLoop = Math.ceil(total / newSpeed);
-        }
-        
+        total = parseInt(c.subCommand.substring(0, c.breakpoint))*parseFloat(c.subCommand.substring(c.breakpoint+1))
+        newSpeed = parseFloat(c.subCommand.substring(c.breakpoint+1))*speedIncrease
+        newLoop = Math.ceil(total / newSpeed);
 
         c.breakpoint = newLoop.toString().length; 
         c.subCommand = newLoop + c.breakletter + newSpeed
@@ -160,14 +153,7 @@ function updateAlienCoords(){
 
             //clone projectile
             if(parseInt(Math.random()*1500) == 1){
-                let projectileAngle;
-                if(listOfAliens[i].x>xPos){
-                    projectileAngle = Math.PI + Math.atan((yPos+15-listOfAliens[i].y)/(xPos-listOfAliens[i].x))
-                }else{
-                    projectileAngle = Math.atan((yPos+15-listOfAliens[i].y)/(xPos-listOfAliens[i].x))
-                }
-                
-                projectiles.push({x: listOfAliens[i].x, y: listOfAliens[i].y, angle: projectileAngle})
+                cloneProjectile(i);
             }
 
             detectCollision(i);
@@ -196,9 +182,22 @@ function updateAlienCoords(){
 
                     let distance = Math.sqrt(Math.pow(goalX-listOfAliens[i].x, 2)+Math.pow(goalY-listOfAliens[i].y, 2))
                     listOfAliens[i].gridLoop = 1;
-                    listOfAliens[i].requiredGridLoop = Math.ceil(distance/(alienSpeed*waveInfo.speedIncrease)) //15 is tentative speed, may change later
+                    listOfAliens[i].requiredGridLoop = Math.ceil(distance/(alienSpeed*waveInfo.speedIncrease)) 
 
                     listOfAliens[i].calculated = true;
+
+                    //set escape loop
+                    listOfAliens[i].fixedLife = (Math.floor(Math.random()*33)+28)*25; //7 to 15 seconds
+                    listOfAliens[i].fixedLifeLoop = 0;
+
+                    //determine if its going to head directly towards ship, or circle and leave
+                    //if (Math.floor(Math.random()*2) == 0){
+                        listOfAliens[i].escapeAngle = (Math.floor(Math.random()*17)-8)*0.25;
+                        listOfAliens[i].requiredEscapeAngleLoop = Math.floor(Math.random()*100)+25;
+                        listOfAliens[i].escapeAngleLoop = 0;
+                    /*}else{
+
+                    }*/
                 }
 
                 if(listOfAliens[i].gridLoop < listOfAliens[i].requiredGridLoop){
@@ -206,17 +205,35 @@ function updateAlienCoords(){
                     listOfAliens[i].y += (alienSpeed*waveInfo.speedIncrease)*Math.sin(listOfAliens[i].angle)
                     listOfAliens[i].gridLoop++;
 
-                }else{
+                }else if (listOfAliens[i].fixedLifeLoop < listOfAliens[i].fixedLife){
                     listOfAliens[i].x = listOfAliens[i].goalX;
                     listOfAliens[i].y = listOfAliens[i].goalY;
                     listOfAliens[i].angle = Math.PI/2
+                    listOfAliens[i].fixedLifeLoop++;
+                }else{
+                    if(listOfAliens[i].escapeAngleLoop < listOfAliens[i].requiredEscapeAngleLoop){
+                        listOfAliens[i].angle += listOfAliens[i].escapeAngle*(Math.PI/180);
+                        listOfAliens[i].escapeAngleLoop++;
+                    }
+                    
+                    listOfAliens[i].x += alienSpeed*Math.cos(listOfAliens[i].angle)
+                    listOfAliens[i].y += alienSpeed*Math.sin(listOfAliens[i].angle)
+
+                    if(listOfAliens[i].x > window.innerWidth || listOfAliens[i].x < 0 || listOfAliens[i].y > window.innerHeight || listOfAliens[i].height < 0){
+                        listOfAliens.splice(i, 1)
+                        cleared ++;
+                        i--;
+                    }
+                }
+
+                if(parseInt(Math.random()*1000) == 1){
+                    cloneProjectile(i);
                 }
                 
             }
             detectCollision(i);
         }
         i++;
-        
     }
 }
 
@@ -224,6 +241,17 @@ function cloneAliens(){
     for (let i = 0; i < listOfAliens.length; i++){
         cloneAlien(listOfAliens[i].x, listOfAliens[i].y, listOfAliens[i].type, listOfAliens[i].angle)
     }
+}
+
+function cloneProjectile(id){
+    let projectileAngle;
+    if(listOfAliens[id].x>xPos){
+        projectileAngle = Math.PI + Math.atan((yPos+15-listOfAliens[id].y)/(xPos-listOfAliens[id].x))
+    }else{
+        projectileAngle = Math.atan((yPos+15-listOfAliens[id].y)/(xPos-listOfAliens[id].x))
+    }
+    
+    projectiles.push({x: listOfAliens[id].x, y: listOfAliens[id].y, angle: projectileAngle})
 }
 
 function detectCollision(id){
