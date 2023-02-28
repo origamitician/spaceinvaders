@@ -1,10 +1,10 @@
 const canvas = document.getElementById("myCanvas");
 const c = canvas.getContext("2d");
 c.imageSmoothingEnabled = false;
-collisionRadius = 17;
+collisionRadius = 16;
 borderThickness = collisionRadius/5
 alienSpeed = 3
-shipSize = 35
+shipSize = 30
 score = 0;
 var alienInterval; 
 
@@ -46,21 +46,21 @@ function initWaveID(sector, id, acceleration){
     let target = listOfWaves[sector-1][id-1];
     cleared = 0;
     clearedByShip = 0;
-    initWave(target.command, target.length, target.pattern, parseFloat(target.coords.split(",")[0]), parseFloat(target.coords.split(",")[1]), target.double, true, acceleration)
+    initWave(target.command, target.length, target.pattern, parseFloat(target.coords.split(",")[0]), parseFloat(target.coords.split(",")[1]), target.double, false, acceleration)
     alienInterval = setInterval(initAlien, Math.round(250/waveInfo.speedIncrease))
 }
 
 let multiplier = 1;
 let waveNumber = 2;
 let waveInitialized = false;
-initWaveID(1, 1, 5)
+initWaveID(1, 1, 1)
 function frame(){
     c.clearRect(0, 0, canvas.width, canvas.height);
     cloneAliens()
     updateAlienCoords()
     //console.log(listOfAliens)
     drawShip(xPos, yPos-5)
-    if(Date.now() - start >200){
+    if(Date.now() - start >150000){
 
         initShot(xPos, yPos-10, "fast")
         

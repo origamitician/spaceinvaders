@@ -48,7 +48,6 @@ function drawStars(){
         c.restore()
         i++;
     }
-    console.log("rendering stars")
 }
 
 function updateProjectileCoords(){

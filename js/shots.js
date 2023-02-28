@@ -1,7 +1,4 @@
-
 var shots = []
-
-
 
 function cloneShots(){
     let i = 0;
