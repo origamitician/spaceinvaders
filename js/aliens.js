@@ -90,7 +90,7 @@ function initAlien(){
             x: waveInfo.startX, y: waveInfo.startY, 
             angle: 0, outerLoop: 0, innerLoop: 0, wave: "original", 
             type: parseInt(waveInfo.pattern[waveInfo.currentID%waveInfo.pattern.length])-1, 
-            alienID: waveInfo.currentID, escaped: false})
+            alienID: waveInfo.currentID, escaped: false, blackHoled: false})
         
 
         if(waveInfo.double){
@@ -101,7 +101,7 @@ function initAlien(){
                 angle: (Math.PI), 
                 outerLoop: 0, innerLoop: 0, wave: "reflected", 
                 type: parseInt(waveInfo.pattern[waveInfo.currentID%waveInfo.pattern.length])-1, 
-                alienID: waveInfo.currentID, escaped: false})
+                alienID: waveInfo.currentID, escaped: false, blackHoled: false})
             
         }
         waveInfo.currentID +=1;
@@ -118,7 +118,7 @@ function updateAlienCoords(){
             let outerLoopLocation = memoryCommandList[listOfAliens[i].outerLoop]
             let angle;
             //console.log(i);
-            if(listOfAliens[i].outerLoop < waveInfo.commandList.length && !listOfAliens[i].escaped){
+            if(listOfAliens[i].outerLoop < waveInfo.commandList.length && !listOfAliens[i].escaped && !listOfAliens[i].blackHoled){
                 if(outerLoopLocation.breakletter == "R" ){
                     if(listOfAliens[i].innerLoop < parseInt(outerLoopLocation.subCommand.substring(0, outerLoopLocation.breakpoint))){
                         angle = parseFloat(outerLoopLocation.subCommand.substring(outerLoopLocation.breakpoint+1))
@@ -234,11 +234,19 @@ function updateAlienCoords(){
             }
 
             if (listOfAliens[i] != null){
-                if(listOfAliens[i].escaped || (parseInt(Math.random()*3000) == 1 && !listOfAliens[i].escaped)){
+                //escape
+                if(listOfAliens[i].escaped || (parseInt(Math.random()*10000) == 1 && !listOfAliens[i].escaped)){
                     escape(i);
                 }
             }
 
+            if (listOfAliens[i] != null){
+                //go towards black hole
+                if(listOfAliens[i].blackHoled || Math.sqrt(Math.pow(listOfAliens[i].x - blackHoleX, 2) + Math.pow(listOfAliens[i].y - blackHoleY, 2)) < blackHoleRadius*(1.5)){
+                    suckTowardsBlackHole(i);
+                }
+            }
+            
             if(listOfAliens[i] != null){
                 detectCollision(i);
             }
@@ -317,6 +325,41 @@ function escape(id){
     }
 }
 
+function suckTowardsBlackHole(id){
+    if(!listOfAliens[id].blackHoled){
+        let distance = Math.sqrt(Math.pow(listOfAliens[id].x - blackHoleX, 2) + Math.pow(listOfAliens[id].y - blackHoleY, 2))
+        listOfAliens[id].blackHoleRequiredLoop = Math.ceil(distance / 15);
+        console.log(distance)
+        listOfAliens[id].blackHoleLoop = 0
+        if(listOfAliens[id].x>blackHoleX){
+            listOfAliens[id].angle = Math.PI + Math.atan((blackHoleY-listOfAliens[id].y)/(blackHoleX-listOfAliens[id].x))
+        }else{
+            listOfAliens[id].angle = Math.atan((blackHoleY-listOfAliens[id].y)/(blackHoleX-listOfAliens[id].x))
+        }
+        listOfAliens[id].blackHoled = true;
+    }
+    
+
+    if(listOfAliens[id].blackHoleLoop < listOfAliens[id].blackHoleRequiredLoop ){
+        //run towards black hole
+        listOfAliens[id].blackHoleLoop++;
+        listOfAliens[id].x += 15*Math.cos(listOfAliens[id].angle)
+        listOfAliens[id].y += 15*Math.sin(listOfAliens[id].angle)
+
+    }else{
+        //extinguish and begone
+        score += Math.round(10*multiplier)
+        originX = listOfAliens[id].x
+        originY = listOfAliens[id].y
+        document.getElementById("scoreDiv").innerHTML = score;
+        listOfAliens[id] = null;
+        textsOnScreen.push({text: Math.round(10*multiplier), font: "35px Inconsolata", x: originX, y: originY, life: 30, offset: 20, loop: 0})
+        blackHoleTotals ++;
+        cleared++;
+        clearedByShip++;
+    }
+}
+
 function cloneProjectile(id){
     console.log("projectile cloning");
     let projectileAngle;
@@ -356,7 +399,7 @@ function detectCollision(id){
             
             if(abilityShotDown >= abilityRequirement){
                 abilityActivated = true;
-                pierceShot();
+                blackHole();
                 abilityShotDown = 0;
             }
 
@@ -370,8 +413,8 @@ function detectCollision(id){
             }else if(shots[j].type == "pierce"){
                 variationY = 5.5
                 var angle1 = Math.floor(Math.random()*61)+15
-                miscEffects.push({x: originX, y: originY, loop: 0, life: Math.floor(Math.random()*20)+50, angle: angle1})
-                miscEffects.push({x: originX, y: originY, loop: 0, life: Math.floor(Math.random()*20)+50, angle: 0-angle1})
+                miscEffects.push({x: originX, y: originY, loop: 0, life: Math.floor(Math.random()*20)+50, angle: angle1, type: "pierce"})
+                miscEffects.push({x: originX, y: originY, loop: 0, life: Math.floor(Math.random()*20)+50, angle: 0-angle1, type: "pierce"})
             }else{
                 //normal shot
                 if(shots[j].type != "jumbo"){
@@ -396,7 +439,8 @@ function detectCollision(id){
                     size: Math.floor(Math.random()*4)+1,
                     initGravity: 4,
                     particleColor: particleColors[alienType][Math.floor(Math.random()*3)],
-                    loop: 0
+                    loop: 0,
+                    life: 100,
                 })
             }
             deathParticles.push(subDeathParticles)

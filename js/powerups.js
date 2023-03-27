@@ -1,8 +1,11 @@
+var blackHoleRadius;
+var blackHoleTotals = 0;
+var blackHoleIterator;
 function pierceShot(){
     abilityTimeLeft = 1200 //1000 frames
     textsOnScreen.push({text: "Piercing Shot Activated!", font: "35px Inconsolata", x: xPos, y: yPos, life: 100, offset: 20, loop: 0})
     shotInfo.type = "pierce";
-    shotInfo.fireIncrement = 17;
+    shotInfo.fireIncrement = 175;
     shotInfo.fireSpeed = 18;
     shotInfo.hitboxBottom = 40;
     shotInfo.hitboxTop = 40;
@@ -22,9 +25,10 @@ function jumboShot(){
     shotInfo.hitboxRight = 7;
 }
 
-var blackHoleTotals = 0;
-
 function blackHole(){
-    abilityTimeLeft = 1000;
+    blackHoleRadius = 150;
+    abilityTimeLeft = 1500;
     textsOnScreen.push({text: "Black Hole Activated!", font: "35px Inconsolata", x: xPos, y: yPos, life: 100, offset: 20, loop: 0})
+    blackHoleIterator = setInterval(() => {miscEffects.push({x: blackHoleX, y: blackHoleY, loop: 0, life: 300, type: "black_hole"})}, 1000)
 }
+

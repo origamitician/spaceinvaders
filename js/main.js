@@ -15,6 +15,9 @@ var abilityTimeLeft = -1;
 var powerupActivated = false;
 var powerupTimeLeft = -1;
 
+var blackHoleX = window.innerWidth / 2;
+var blackHoleY = window.innerHeight * (0.35);
+
 canvas.setAttribute('height', window.innerHeight+ "px");
 canvas.setAttribute('width', window.innerWidth + "px");
 
@@ -95,8 +98,24 @@ function frame(){
     drawMiscEffects();
     updateMiscEffects();
 
-
     multiplier += 0.0001;
+
+    //render black hole, if needed
+    if(blackHoleRadius > 0){
+        c.beginPath();
+        c.save();
+        
+        c.arc(blackHoleX, blackHoleY, blackHoleRadius*(3/4), 0, Math.PI*2)
+        c.globalAlpha = 0.5;
+        const gradient = c.createRadialGradient(blackHoleX, blackHoleY, 0, blackHoleX, blackHoleY, blackHoleRadius*(3/4));
+        gradient.addColorStop(0, "lightgreen");
+        gradient.addColorStop(1, "black");
+        c.fillStyle = gradient;
+        //c.fillStyle = "#6ecfe0";
+        c.fill();
+        c.closePath();
+        c.restore();
+    }
     
     //actual main game loop
     if(listOfWaves[0][waveNumber-2].double){
@@ -166,6 +185,42 @@ function renderAbilityBar(){
             shotInfo.type = "normal";
             shotInfo.fireIncrement = 200;
             abilityActivated = false; 
+
+            if(blackHoleRadius > 0){
+                
+                const colors = ["lightgreen", "#4bf542", "#17ba0f", "#278f22", "#71bd6d", "#a3ed9f", "gray", "white"];
+                let subDeathParticles = []
+                
+                //create fancy explosion after blackhole explodes
+                let radius = 5
+                let numParticles = Math.floor(Math.random()*blackHoleTotals*2)+20 
+
+                for (let k = 0; k < numParticles; k++){
+                    subDeathParticles.push({
+                        x: blackHoleX+(radius*Math.cos(k*((Math.PI*2)/numParticles))),
+                        y: blackHoleY+(radius*Math.sin(k*((Math.PI*2)/numParticles))),
+                        variationX: (Math.random()*8)-4,
+                        variationY: (Math.random()*8)-4,
+                        angle: k*((Math.PI*2)/numParticles),
+                        size: Math.floor(Math.random()*10)+1,
+                        initGravity: 2.75,
+                        particleColor: colors[Math.floor(Math.random()*colors.length)],
+                        loop: 0,
+                        life: 250,
+                    })
+                }
+
+                deathParticles.push(subDeathParticles)
+
+                score += Math.round((10*multiplier*blackHoleTotals) / 2)
+
+                textsOnScreen.push({text: "+" + Math.round((10*multiplier*blackHoleTotals) / 2), font: "85px Inconsolata", x: blackHoleX, y: blackHoleY, life: 100, offset: 60, loop: 0})
+              
+                document.getElementById("scoreDiv").innerHTML = score;
+                blackHoleRadius = 0;
+                blackHoleTotals = 0;
+                clearInterval(blackHoleIterator); //this might cause problems
+            }
         }
     }
     

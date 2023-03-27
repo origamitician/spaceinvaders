@@ -37,10 +37,10 @@ var listOfWaves = [
         waveID: 3},
 
         {command: "200F3-45L2-15F3-45L2-40F3-90L2-300F3",
-        length: 8,
+        length: 280,
         pattern: "122",
         coords: "0,250",
-        double: false,
+        double: true,
         escapeProb: 0,
         waveID: 4}, 
 

@@ -26,29 +26,44 @@ function drawProjectiles(){
 function drawMiscEffects(){
     let i = 0;
     while(i < miscEffects.length){
-        c.save()
+        if(miscEffects[i].type == "pierce"){
+            //draw ellipse for piercing shot
+            c.save()
        
-        c.translate(miscEffects[i].x, miscEffects[i].y)
+            c.translate(miscEffects[i].x, miscEffects[i].y)
         
-        c.rotate(miscEffects[i].angle*(Math.PI/180))
-        c.scale(6, 1)
-        c.beginPath()
-        c.globalAlpha = 1 - (miscEffects[i].loop / miscEffects[i].life)
-        c.arc(0, 0, 2+miscEffects[i].loop/5, 0, Math.PI*2)
+            c.rotate(miscEffects[i].angle*(Math.PI/180))
+            c.scale(6, 1)
+            c.beginPath()
+            c.globalAlpha = 1 - (miscEffects[i].loop / miscEffects[i].life)
+            c.arc(0, 0, 2+miscEffects[i].loop/5, 0, Math.PI*2)
+            
+            c.fillStyle = "lightgreen";
+            c.fill();
+            c.lineWidth = 1;
+            c.strokeStyle = "lightblue";
+            c.stroke();
+            c.closePath();
+            c.restore();
+        }else if(miscEffects[i].type == "black_hole"){
+            //draw black hole's concentric circles
+            c.beginPath();
+            c.save();
+            c.globalAlpha = 0.8;
+            c.arc(miscEffects[i].x, miscEffects[i].y, blackHoleRadius-(blackHoleRadius*(miscEffects[i].loop/miscEffects[i].life)), 0, Math.PI*2)
+            c.lineWidth = 6;
+            c.strokeStyle = "lightgreen";
+            c.stroke();
+            c.closePath();
+            c.restore();
+        }
         
-        c.fillStyle = "lightgreen";
-        c.fill();
-        c.lineWidth = "4px";
-        c.strokeStyle = "lightblue";
-        c.stroke();
-        c.closePath();
-        c.restore();
         i++;
     }
 }
 
 function updateMiscEffects(){
-    console.log(miscEffects)
+    //console.log(miscEffects)
     let i = 0;
     while(i < miscEffects.length){
         if(miscEffects[i].loop < miscEffects[i].life){
@@ -111,7 +126,7 @@ function updateDeathParticles(){
     while (i < deathParticles.length){
         j = 0;
         while (j < deathParticles[i].length){
-            if(/*deathParticles[i][j].y < 625*/ deathParticles[i][j].loop < 100){
+            if(deathParticles[i][j].loop < deathParticles[i][j].life){
                 deathParticles[i][j].x += Math.cos(deathParticles[i][j].angle)*0.5 + deathParticles[i][j].variationX
                 deathParticles[i][j].y -= Math.sin(deathParticles[i][j].angle)*0.5 + deathParticles[i][j].initGravity + deathParticles[i][j].variationY 
                 deathParticles[i][j].initGravity -= 0.1
@@ -136,7 +151,7 @@ function drawDeathParticles(){
             size = deathParticles[i][j].size
             c.beginPath()
             c.save()
-            c.globalAlpha = 1-0.01*(deathParticles[i][j].loop);
+            c.globalAlpha = 1-(deathParticles[i][j].loop/deathParticles[i][j].life);
             c.rect(deathParticles[i][j].x-size, deathParticles[i][j].y-size, size*2, size*2)
             c.fillStyle = deathParticles[i][j].particleColor;
             c.fill()
