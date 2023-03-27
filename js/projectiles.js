@@ -5,6 +5,9 @@ var stars = []
 let particleColors = [["#46eb34", "#85d166", "grey"], ["#13ede6", "red", "#3c9e9b"], ["orange", "#c4bc27", "#9e873c"]]
 let projectileImages = [document.getElementsByClassName("projectile")[0]]
 
+let miscEffects = []
+//effects n stuff from piercing shots, etc...
+
 function drawProjectiles(){
     let i = 0;
     while(i < projectiles.length){
@@ -20,7 +23,44 @@ function drawProjectiles(){
     }
 }
 
+function drawMiscEffects(){
+    let i = 0;
+    while(i < miscEffects.length){
+        c.save()
+       
+        c.translate(miscEffects[i].x, miscEffects[i].y)
+        
+        c.rotate(miscEffects[i].angle*(Math.PI/180))
+        c.scale(6, 1)
+        c.beginPath()
+        c.globalAlpha = 1 - (miscEffects[i].loop / miscEffects[i].life)
+        c.arc(0, 0, 2+miscEffects[i].loop/5, 0, Math.PI*2)
+        
+        c.fillStyle = "lightgreen";
+        c.fill();
+        c.lineWidth = "4px";
+        c.strokeStyle = "lightblue";
+        c.stroke();
+        c.closePath();
+        c.restore();
+        i++;
+    }
+}
 
+function updateMiscEffects(){
+    console.log(miscEffects)
+    let i = 0;
+    while(i < miscEffects.length){
+        if(miscEffects[i].loop < miscEffects[i].life){
+            miscEffects[i].loop++;
+        }else{
+            miscEffects.splice(i, 1);
+            i--;
+        }
+        i++;
+    }
+
+}
 
 function updateStars(){
     let i = 0;
@@ -105,3 +145,4 @@ function drawDeathParticles(){
         }
     }
 }
+
