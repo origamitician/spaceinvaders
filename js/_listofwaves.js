@@ -3,7 +3,7 @@ var listOfWaves = [
         //sector 1
         {command: "120F3-45L2-35R3-120F3-180L1.5-50F3-20R7-50F3-45L2-200F3" /**/,
         length: 6,
-        pattern: "13223",
+        pattern: "1",
         coords: "0,300",
         double: false,
         escapeProb: 0,
@@ -30,14 +30,14 @@ var listOfWaves = [
 
         {command: "1R135-70F3-45R1-200F3-360R2-40F3-70L2.75-300F3",
         length: 11,
-        pattern: "122",
+        pattern: "123",
         coords: "1280,0",
         double: false,
         escapeProb: 0,
         waveID: 3},
 
         {command: "200F3-45L2-15F3-45L2-40F3-90L2-300F3",
-        length: 280,
+        length: 7,
         pattern: "122",
         coords: "0,250",
         double: true,

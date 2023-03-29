@@ -21,8 +21,8 @@ function cloneAlien(startX, startY, type, angle){
     
     /*hitbox*/
     c.beginPath()
-    c.strokeStyle = "#ffc7c7";
-    c.lineWidth = 1;
+    c.strokeStyle = "red";
+    c.lineWidth = 2.5;
     c.rect(startX-collisionRadius, startY-collisionRadius, collisionRadius*2, collisionRadius*2);
 
     c.stroke();
@@ -235,14 +235,14 @@ function updateAlienCoords(){
 
             if (listOfAliens[i] != null){
                 //escape
-                if(listOfAliens[i].escaped || (parseInt(Math.random()*10000) == 1 && !listOfAliens[i].escaped)){
+                if(listOfAliens[i].escaped || (parseInt(Math.random()*10000000) == 1 && !listOfAliens[i].escaped)){
                     escape(i);
                 }
             }
 
             if (listOfAliens[i] != null){
                 //go towards black hole
-                if(listOfAliens[i].blackHoled || Math.sqrt(Math.pow(listOfAliens[i].x - blackHoleX, 2) + Math.pow(listOfAliens[i].y - blackHoleY, 2)) < blackHoleRadius*(1.5)){
+                if(listOfAliens[i].blackHoled || Math.sqrt(Math.pow(listOfAliens[i].x - blackHoleX, 2) + Math.pow(listOfAliens[i].y - blackHoleY, 2)) < blackHoleRadius*(2)){
                     suckTowardsBlackHole(i);
                 }
             }
@@ -399,7 +399,7 @@ function detectCollision(id){
             
             if(abilityShotDown >= abilityRequirement){
                 abilityActivated = true;
-                blackHole();
+                pierceShot();
                 abilityShotDown = 0;
             }
 

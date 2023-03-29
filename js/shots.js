@@ -5,7 +5,7 @@ var shotInfo = {
     hitboxRight: 3,
     hitboxTop: 20,
     hitboxBottom: 20,
-    fireSpeed: 15,
+    fireSpeed: 14,
     type: "normal",
     fireIncrement: 200, //200 ms per shot
 } //this variable does not change and is a reference to default shot properties
@@ -19,7 +19,12 @@ function cloneShots(){
             //typical rectangular shot
             c.beginPath()
             c.save()
-            c.rect(shots[i].x-shots[i].hitboxLeft, shots[i].y-shots[i].hitboxTop, shots[i].hitboxLeft+shots[i].hitboxRight, shots[i].hitboxTop+shots[i].hitboxBottom)
+
+            c.translate(shots[i].x, shots[i].y)
+            c.rotate((Math.PI/180)*(90-shots[i].shotAngleX));
+            c.rect(0-shots[i].hitboxLeft, 0-shots[i].hitboxTop, shots[i].hitboxLeft+shots[i].hitboxRight, shots[i].hitboxTop+shots[i].hitboxBottom)
+
+           
 
             if(shots[i].alpha >= 0.99){
                 c.fillStyle = "lightblue"
@@ -29,6 +34,10 @@ function cloneShots(){
                 gradient.addColorStop(1, "lightblue");
                 c.fillStyle = gradient;
             }
+
+            c.fill()
+            c.restore();
+            c.closePath()
             
             
         }else{
@@ -36,23 +45,33 @@ function cloneShots(){
             c.beginPath();     
             c.lineWidth = "3";
             c.strokeStyle = "lightgreen"
-            const gradient = c.createLinearGradient(shots[i].x, shots[i].y+shots[i].hitboxBottom, shots[i].x, shots[i].y-shots[i].hitboxTop);
+            c.save()
+
+            c.translate(shots[i].x, shots[i].y)
+            c.rotate((Math.PI/180)*(90-shots[i].shotAngleX));
+            const gradient = c.createLinearGradient(0, shots[i].hitboxBottom, 0, 0-shots[i].hitboxTop);
             gradient.addColorStop(0, "white");
             gradient.addColorStop(1, "lightgreen");
             c.fillStyle = "lightgreen"
-            c.moveTo(shots[i].x, shots[i].y+shots[i].hitboxBottom)
+            c.moveTo(0, shots[i].hitboxBottom)
             
-            c.lineTo(shots[i].x+shots[i].hitboxRight, shots[i].y-shots[i].hitboxTop+(shots[i].hitboxRight*2));
-            c.lineTo(shots[i].x, shots[i].y-shots[i].hitboxTop);
-            c.lineTo(shots[i].x-shots[i].hitboxLeft, shots[i].y-shots[i].hitboxTop+(shots[i].hitboxRight*2))
-            c.lineTo(shots[i].x, shots[i].y+shots[i].hitboxBottom);
+            c.lineTo(0+shots[i].hitboxRight, 0-shots[i].hitboxTop+(shots[i].hitboxRight*2));
+            c.lineTo(0, 0-shots[i].hitboxTop);
+            c.lineTo(0-shots[i].hitboxLeft, 0-shots[i].hitboxTop+(shots[i].hitboxRight*2))
+            c.lineTo(0, 0+shots[i].hitboxBottom);
             c.stroke();
+            c.restore();
             c.closePath();
         }
-        
-        c.fill()
-        c.restore();
-        c.closePath()
+
+        //just for hitboxes' sake
+
+        c.beginPath();
+        c.rect(shots[i].x-shots[i].hitboxLeft, shots[i].y-shots[i].hitboxTop, shots[i].hitboxLeft*2, shots[i].hitboxTop*2)
+        c.lineWidth = 1;
+        c.strokeStyle = "red";
+        c.stroke();
+        c.closePath();
         i++
     }
 }
@@ -62,7 +81,8 @@ function updateShotCoords(){
     while (i < shots.length){
         if(!shots[i].exploding){
             
-            shots[i].y -= shots[i].fireSpeed
+            shots[i].y -= (Math.sin((Math.PI/180)*(shots[i].shotAngleX)))*shots[i].fireSpeed
+            shots[i].x += (Math.cos((Math.PI/180)*(shots[i].shotAngleX)))*shots[i].fireSpeed
             
 
             if (shots[i].y <= 0){

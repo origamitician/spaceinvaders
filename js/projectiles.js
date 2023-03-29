@@ -92,7 +92,6 @@ function updateStars(){
 function drawStars(){
     let i = 0;
     while(i < stars.length){
-        
         c.beginPath()
         c.rect(stars[i].x, stars[i].y, 5, 5+(stars[i].gravity-4)*2)
         c.fillStyle = "white"

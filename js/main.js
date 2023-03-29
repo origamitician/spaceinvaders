@@ -72,7 +72,13 @@ function frame(){
     //console.log(listOfAliens)
     drawShip(xPos, yPos-5)
     if(Date.now() - start > shotInfo.fireIncrement){
-        shots.push({x: xPos, y: yPos-10, type: shotInfo.type, hitboxLeft: shotInfo.hitboxLeft, hitboxRight: shotInfo.hitboxRight, hitboxTop: shotInfo.hitboxTop, hitboxBottom: shotInfo.hitboxBottom, exploding: false, alpha: 1.0, fireSpeed: shotInfo.fireSpeed})
+
+        /*for(let i = 1; i < 18; i++){
+            shots.push({x: xPos, y: yPos-10, shotAngleX: 90-((i-9)*7), type: shotInfo.type, hitboxLeft: shotInfo.hitboxLeft, hitboxRight: shotInfo.hitboxRight, hitboxTop: shotInfo.hitboxTop, hitboxBottom: shotInfo.hitboxBottom, exploding: false, alpha: 1.0, fireSpeed: shotInfo.fireSpeed})
+        }*/
+
+        shots.push({x: xPos, y: yPos-10, shotAngleX: 90, type: shotInfo.type, hitboxLeft: shotInfo.hitboxLeft, hitboxRight: shotInfo.hitboxRight, hitboxTop: shotInfo.hitboxTop, hitboxBottom: shotInfo.hitboxBottom, exploding: false, alpha: 1.0, fireSpeed: shotInfo.fireSpeed})
+        
         start = Date.now()
         //console.log(shotInfo);
     }
@@ -183,7 +189,7 @@ function renderAbilityBar(){
             shotInfo.hitboxBottom = 20;
             shotInfo.fireSpeed = 15;
             shotInfo.type = "normal";
-            shotInfo.fireIncrement = 200;
+            shotInfo.fireIncrement = 225;
             abilityActivated = false; 
 
             if(blackHoleRadius > 0){
